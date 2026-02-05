@@ -1,12 +1,15 @@
+import Login from "./components/Login";
+
 function App() {
-  let text = "Hello World!";
+  // let text = "Hello World!";
   return (
     <>
-      <h1 className="hello">Hello</h1>
+      {/* <h1 className="hello">Hello</h1>
       <h1>Welcome to React!</h1>
       <label htmlFor="username">Username:</label>
       <p>{text}</p>
-      <input type="text" />
+      <input type="text" /> */}
+      <Login />
     </>
   );
 }
