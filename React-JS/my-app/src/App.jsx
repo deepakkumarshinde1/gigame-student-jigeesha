@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react";
 import Login from "./components/Login";
+import Users from "./components/Users";
 
 function App() {
   // let text = "Hello World!";
+  let [toggle, setToggle] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setToggle(false);
+    }, 5000);
+  });
   return (
     <>
       {/* <h1 className="hello">Hello</h1>
@@ -9,7 +18,8 @@ function App() {
       <label htmlFor="username">Username:</label>
       <p>{text}</p>
       <input type="text" /> */}
-      <Login />
+      {/* <Login /> */}
+      {toggle ? <Users /> : null}
     </>
   );
 }
