@@ -1,51 +1,89 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { Component, useEffect, useState } from "react";
 
-function Users() {
-  let [users, setUser] = useState([]);
-  let [counter, setCounter] = useState(0);
-  let getUsers = async () => {
+class Users extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: [],
+      counter: this.props.counter || 0,
+      intervalId: null,
+    };
+  }
+
+  getUsers = async () => {
     let { data } = await axios.get(
       "https://jsonplaceholder.typicode.com/users",
     );
-    setUser(data);
+    this.setState((state) => {
+      return { ...state, users: data };
+    });
   };
 
-  let removeElement = (index) => {
-    let newUser = JSON.parse(JSON.stringify(users)); // deep clone
+  removeElement = (index) => {
+    let newUser = JSON.parse(JSON.stringify(this.state.users)); // deep clone
     newUser.splice(index, 1);
-    setUser(newUser);
+    this.setState((state) => {
+      return { ...state, users: newUser };
+    });
   };
-  useEffect(() => {
-    getUsers();
 
+  static getDerivedStateFromProps(props, state) {
+    if (props.counter !== state.counter) {
+      return { ...state, counter: props.counter };
+    }
+  }
+  componentDidMount() {
+    this.getUsers();
     let intervalId = setInterval(() => {
       console.log("interval");
     }, 1000);
+    this.setState((state) => {
+      return { ...state, intervalId: intervalId };
+    });
+  }
 
+  componentWillUnmount() {
     // unmounting
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+    clearInterval(this.state.intervalId);
+  }
 
-  useEffect(() => {
+  componentDidUpdate(prevProps, prevState) {
     console.log("counter");
-  }, [counter]);
+  }
 
-  return (
-    <div>
-      <button onClick={() => setCounter(counter + 1)}>INC {counter}</button>
-      {users.map((value, index) => {
-        return (
-          <p key={value.id}>
-            {value.name}{" "}
-            <button onClick={() => removeElement(index)}>delete</button>
-          </p>
-        );
-      })}
-    </div>
-  );
+  shouldComponentUpdate(nextProps, nextState) {
+    // deep compare
+    // logic => if counter is even => update, else => do not update
+    return true;
+  }
+
+  componentDidCatch(error, info) {
+    // log the error to an error reporting service
+  }
+  render() {
+    return (
+      <div>
+        <button
+          onClick={() =>
+            this.setState((state) => {
+              return { ...state, counter: this.state.counter + 1 };
+            })
+          }
+        >
+          INC {this.state.counter}
+        </button>
+        {this.state.users.map((value, index) => {
+          return (
+            <p key={value.id}>
+              {value.name}{" "}
+              <button onClick={() => this.removeElement(index)}>delete</button>
+            </p>
+          );
+        })}
+      </div>
+    );
+  }
 }
 
 export default Users;
