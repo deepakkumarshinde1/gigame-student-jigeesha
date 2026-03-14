@@ -1,7 +1,7 @@
 import { memo } from "react";
 
-function HomeChild() {
-  return <div>HomeChild</div>;
+function HomeChild({ result, incCount2 }) {
+  return <div>HomeChild {result} </div>;
 }
 
 export default memo(HomeChild);
